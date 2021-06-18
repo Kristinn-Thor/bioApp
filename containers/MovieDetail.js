@@ -6,6 +6,10 @@ const MovieDetail = ({ route }) => {
   const baseURL = 'https://www.omdbapi.com/';
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState({
+    isError: false,
+    text: '',
+  });
   const [detail, setDetail] = useState({
     title: '',
     year: '',
@@ -27,10 +31,8 @@ const MovieDetail = ({ route }) => {
         runtime: searchResults.Runtime,
         actors: [...searchResults.Actors.split(', ')],
       });
-
-
     } catch (error) {
-      console.info(error);
+      setError({ isError: true, text: error.message });
     } finally {
       setLoading(false);
     };
@@ -43,6 +45,11 @@ const MovieDetail = ({ route }) => {
   return (
     <View style={styles.container}>
       {loading && (<ActivityIndicator size='large' color='#90712C' />
+      )}
+      {error.isError && (
+        <View>
+          <Text style={styles.error}>{error.text}</Text>
+        </View>
       )}
       {!loading && (<>
         <Text style={styles.title} >{detail.title} </Text>
@@ -64,6 +71,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#4B4237',
+  },
+  error: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#D5A021',
+    padding: 10,
   },
   title: {
     fontSize: 25,
